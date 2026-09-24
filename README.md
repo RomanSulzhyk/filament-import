@@ -185,11 +185,11 @@ A networked MySQL or PostgreSQL database is slower. Measure on your own database
 - The report's download link is signed. It carries the panel's auth guard and the user's id, and works only for the user who ran the import, on that guard. No report is written when no user is signed in.
 - Reports are deleted after `failed_rows_ttl_minutes` (default 24 hours, the same as the link). Old reports are pruned whenever a new one is written. A failure while pruning is reported to your exception handler and never fails the import. If imports are rare, or your disk does not allow listing files, schedule `php artisan filament-import:prune` as well.
 
-## Coming from eighty9nine/filament-excel-import?
+## Coming from eightynine/filament-excel-import?
 
-That plugin has no Filament v5 release. This package reproduces its default behaviour, matching file headers to `$fillable` attributes, and these of its methods:
+That plugin (`eightynine/filament-excel-import` on Packagist, `eighty9nine/filament-excel-import` on GitHub) has no Filament v5 release yet. This package reproduces its default behaviour, matching file headers to `$fillable` attributes, and these of its methods:
 
-| eighty9nine method | Here |
+| eightynine method | Here |
 |---|---|
 | `ExcelImportAction::make()` | Supported. Change the `use` import to `RomanSulzhyk\FilamentImport\Actions\ExcelImportAction`. |
 | `->validateUsing([...])` | Supported, same signature. |
