@@ -1,0 +1,38 @@
+name: Bug report
+description: Something imports wrongly, fails, or crashes.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: The action configuration you use, and a small sample file with any private data removed. Header rows and one or two rows are usually enough.
+    validations:
+      required: true
+  - type: input
+    id: package
+    attributes:
+      label: Package version
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Filament, Laravel and PHP versions
+      placeholder: Filament 5.8, Laravel 13.3, PHP 8.4
+    validations:
+      required: true
+  - type: dropdown
+    id: format
+    attributes:
+      label: File format
+      options: [xlsx, csv, other]
+    validations:
+      required: true

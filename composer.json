@@ -1,0 +1,74 @@
+{
+    "name": "romansulzhyk/filament-import",
+    "description": "Import Excel and CSV files into any Filament v4 or v5 resource immediately, without a queue: header matching, validation, upserts and a downloadable report of failed rows.",
+    "keywords": [
+        "romansulzhyk",
+        "laravel",
+        "filament",
+        "filamentphp",
+        "filament-plugin",
+        "import",
+        "excel",
+        "csv",
+        "xlsx",
+        "spreadsheet"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/RomanSulzhyk/filament-import",
+    "support": {
+        "issues": "https://github.com/RomanSulzhyk/filament-import/issues",
+        "source": "https://github.com/RomanSulzhyk/filament-import",
+        "security": "https://github.com/RomanSulzhyk/filament-import/security/policy"
+    },
+    "authors": [
+        {
+            "name": "Roman Sulzhyk",
+            "homepage": "https://github.com/RomanSulzhyk",
+            "role": "Developer"
+        }
+    ],
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "ext-mbstring": "*",
+        "ext-zip": "*",
+        "filament/filament": "^4.0|^5.0",
+        "league/csv": "^9.16",
+        "openspout/openspout": "^4.23",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0",
+        "pestphp/pest-plugin-livewire": "^3.0|^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RomanSulzhyk\\FilamentImport\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RomanSulzhyk\\FilamentImport\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RomanSulzhyk\\FilamentImport\\FilamentImportServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
