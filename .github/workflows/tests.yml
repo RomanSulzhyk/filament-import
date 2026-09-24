@@ -25,10 +25,10 @@ jobs:
           # Laravel 13 requires PHP 8.3.
           - php: '8.2'
             laravel: '13.*'
-          # Pest 4 and Testbench 11 need PHP 8.3, so Filament 5 lowest does not resolve on 8.2.
+          # Filament 5 needs Livewire 4, whose Pest plugin needs PHP 8.3, so the
+          # test tools cannot install on 8.2. The package itself still does.
           - php: '8.2'
             filament: '^5.0'
-            stability: prefer-lowest
           # The lowest versions of Laravel 11 and 12 predate PHP 8.5.
           - php: '8.5'
             stability: prefer-lowest
@@ -52,6 +52,12 @@ jobs:
           LARAVEL: ${{ matrix.laravel }}
           STABILITY: ${{ matrix.stability }}
         run: |
+          # Laravel 11 is end-of-life and every 11.x release has open security
+          # advisories, which Composer now refuses to install. Test it anyway,
+          # in this job only, so users still on 11 know the package works.
+          if [[ "${LARAVEL}" == 11.* ]]; then
+            php -r '$f = "composer.json"; $c = json_decode(file_get_contents($f), true); $c["config"]["policy"]["advisories"]["block"] = false; $c["config"]["audit"]["block-insecure"] = false; file_put_contents($f, json_encode($c, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));'
+          fi
           composer require "filament/filament:${FILAMENT}" "laravel/framework:${LARAVEL}" --no-interaction --no-update
           composer update "--${STABILITY}" --prefer-dist --no-interaction --with-all-dependencies
 

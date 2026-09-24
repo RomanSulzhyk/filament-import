@@ -225,7 +225,7 @@ vendor/bin/pest                                     # 98 tests
 vendor/bin/pest tests/Performance --group=performance
 ```
 
-CI runs the suite on PHP 8.2 to 8.5 against Filament 4 and 5 and Laravel 11, 12 and 13, at both the lowest and the newest allowed versions.
+CI runs the suite on PHP 8.2 to 8.5 against Filament 4 and 5 and Laravel 11, 12 and 13, at both the lowest and the newest allowed versions. Two notes: Filament 5 on PHP 8.2 is not covered, because its test tools need PHP 8.3; and Laravel 11 is end-of-life with open security advisories on every release, so it is tested but not recommended.
 
 ## Translations
 
