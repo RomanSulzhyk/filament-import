@@ -56,7 +56,10 @@ jobs:
           composer update "--${STABILITY}" --prefer-dist --no-interaction --with-all-dependencies
 
       - name: Show resolved versions
-        run: composer show filament/filament laravel/framework livewire/livewire openspout/openspout league/csv | grep -E '^(name|versions)'
+        run: |
+          for package in filament/filament laravel/framework livewire/livewire openspout/openspout league/csv; do
+            composer show "$package" | grep -E '^(name|versions)'
+          done
 
       - name: Tests
         run: vendor/bin/pest
