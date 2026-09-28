@@ -1,6 +1,6 @@
 {
     "name": "romansulzhyk/filament-import",
-    "description": "Import Excel and CSV files into any Filament v4 or v5 resource immediately, without a queue: header matching, validation, upserts and a downloadable report of failed rows.",
+    "description": "Import CSV and Excel (.xlsx) files into any Filament v4 or v5 resource immediately, without a queue: delimiter and encoding detection, header matching, validation, upserts and a downloadable report of failed rows.",
     "keywords": [
         "romansulzhyk",
         "laravel",
@@ -14,6 +14,7 @@
         "excel-import",
         "csv",
         "csv-import",
+        "tsv",
         "xlsx",
         "spreadsheet",
         "importer",

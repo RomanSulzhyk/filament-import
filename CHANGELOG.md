@@ -2,6 +2,15 @@
 
 All notable changes are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-09-28
+
+### Added
+- `->acceptedFileTypes([...])` replaces the MIME types the upload accepts, for systems that label CSV files differently. Extend the defaults with `ExcelImportAction::ACCEPTED_FILE_TYPES`.
+- `.tsv` files are read as tab-separated CSV.
+
+### Changed
+- A file without a `.csv`, `.tsv` or `.txt` extension is read as CSV only when its first kilobyte looks like text. Before, only its first four bytes were checked, so a binary file under a generic type could be read as a CSV of garbage.
+
 ## [1.1.0] - 2026-09-28
 
 ### Added

@@ -27,7 +27,7 @@ class ReaderFactory
             return new XlsxReader($path);
         }
 
-        if (in_array($extension, ['csv', 'txt'], true) || ($magic !== '' && ! str_contains($magic, "\0"))) {
+        if (in_array($extension, ['csv', 'tsv', 'txt'], true) || static::looksLikeText($path)) {
             return new CsvReader($path, encoding: $csvEncoding);
         }
 
@@ -127,5 +127,34 @@ class ReaderFactory
         fclose($handle);
 
         return $magic;
+    }
+
+    /**
+     * A file without a text extension is read as CSV only when its start
+     * looks like text: a UTF-16 byte order mark, or no NUL and no control
+     * characters other than tab, line feed and carriage return. So an image
+     * or other binary file uploaded under a generic type is refused instead
+     * of being read as a CSV full of garbage.
+     */
+    protected static function looksLikeText(string $path): bool
+    {
+        $handle = @fopen($path, 'rb');
+
+        if (! $handle) {
+            return false;
+        }
+
+        $sample = (string) fread($handle, 1024);
+        fclose($handle);
+
+        if ($sample === '') {
+            return false;
+        }
+
+        if (str_starts_with($sample, "\xFF\xFE") || str_starts_with($sample, "\xFE\xFF")) {
+            return true;
+        }
+
+        return preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $sample) === 0;
     }
 }

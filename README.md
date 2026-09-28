@@ -10,9 +10,9 @@
 
 </div>
 
-Import `.xlsx` and `.csv` files into any Filament v4 or v5 resource, **immediately, with no queue worker**.
+Import CSV and Excel (`.csv`, `.tsv`, `.xlsx`) files into any Filament v4 or v5 resource, **immediately, with no queue worker**.
 
-**Filament 4 and 5 · `.xlsx` and `.csv` · no queue · runs your existing `Importer` classes · failed rows as `.xlsx` · 63 locales · free, MIT**
+**Filament 4 and 5 · CSV and `.xlsx` · no queue · any CSV delimiter and encoding · runs your existing `Importer` classes · failed rows as `.xlsx` · 63 locales · free, MIT**
 
 - Works with zero configuration, reading columns from your model's `$fillable`.
 - Or runs **your existing Filament `Importer` classes**, without queues and with `.xlsx` support that the core importer does not have.
@@ -150,6 +150,7 @@ ExcelImportAction::make()
     ->templateDownload(false) // hide the "Download template" link
     ->syncRowLimit(5000)
     ->csvEncoding('Windows-1250') // only if detection is not enough, see below
+    ->acceptedFileTypes([...ExcelImportAction::ACCEPTED_FILE_TYPES, 'text/tab-separated-values'])
     ->maxFileSize(20480); // kilobytes
 ```
 
@@ -229,6 +230,14 @@ No. The core `ImportAction` reads CSV only and runs through queued job batches. 
 ### How do I import Excel in Filament 5 without a queue worker?
 
 `composer require romansulzhyk/filament-import`, then add `ExcelImportAction::make()` to the resource's list page header actions. Rows are written in the request, each in its own transaction, and the user sees the result immediately.
+
+### Is there a Filament CSV import plugin that works without a queue?
+
+Yes, this one. Filament's core `ImportAction` imports CSV through queued job batches. `ExcelImportAction` imports the same CSV in the request, detects the delimiter and encoding, and also reads `.xlsx` and `.tsv`.
+
+### How do I accept CSV files that a browser or system labels with another MIME type?
+
+Upload validation checks the file's detected type against a list. Extend it with `->acceptedFileTypes([...ExcelImportAction::ACCEPTED_FILE_TYPES, 'application/octet-stream'])`. The reader still decides from the file's contents and extension, so a binary file under an accepted type is refused, not imported as garbage.
 
 ### How do I import a CSV with semicolons, a BOM or a Windows code page?
 

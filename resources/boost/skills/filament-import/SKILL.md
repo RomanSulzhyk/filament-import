@@ -1,6 +1,6 @@
 ---
 name: filament-import
-description: Import Excel (.xlsx) or CSV files into Filament v4 or v5 resources with romansulzhyk/filament-import (ExcelImportAction). Runs synchronously in the request, with no queue worker; works zero-config from the model's $fillable or runs existing Filament Importer classes; header matching, upsertBy, validation, failed-rows .xlsx report and template download. Use when adding spreadsheet or CSV import to a Filament resource, list page or table.
+description: Import CSV, TSV or Excel (.xlsx) files into Filament v4 or v5 resources with romansulzhyk/filament-import (ExcelImportAction). Runs synchronously in the request, with no queue worker; works zero-config from the model's $fillable or runs existing Filament Importer classes; header matching, upsertBy, validation, failed-rows .xlsx report and template download. Use when adding spreadsheet or CSV import to a Filament resource, list page or table.
 ---
 
 # Excel and CSV import for Filament (romansulzhyk/filament-import)
@@ -80,6 +80,7 @@ ExcelImportAction::make()
     ->templateDownload(false)
     ->syncRowLimit(5000)
     ->csvEncoding('Windows-1250') // only if detection is not enough
+    ->acceptedFileTypes([...ExcelImportAction::ACCEPTED_FILE_TYPES, 'application/octet-stream']) // extra MIME types for CSV
     ->maxFileSize(20480); // kilobytes
 ```
 

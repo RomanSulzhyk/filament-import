@@ -101,6 +101,9 @@ class ExcelImportAction extends Action
 
     protected int $maxFileSizeKilobytes = 10240;
 
+    /** @var array<string>|Closure|null */
+    protected array | Closure | null $acceptedFileTypes = null;
+
     public static function getDefaultName(): ?string
     {
         return 'excelImport';
@@ -159,7 +162,7 @@ class ExcelImportAction extends Action
                 FileUpload::make('file')
                     ->label(__('filament-import::import.fields.file.label'))
                     ->helperText(__('filament-import::import.fields.file.helper'))
-                    ->acceptedFileTypes(static::ACCEPTED_FILE_TYPES)
+                    ->acceptedFileTypes(fn (): array => $this->getAcceptedFileTypes())
                     ->maxSize($this->maxFileSizeKilobytes)
                     ->storeFiles(false)
                     ->visibility('private')
@@ -403,6 +406,30 @@ class ExcelImportAction extends Action
         $this->maxFileSizeKilobytes = $kilobytes;
 
         return $this;
+    }
+
+    /**
+     * Replace the MIME types the upload accepts, for systems that label CSV
+     * files differently. Extend the defaults with
+     * [...ExcelImportAction::ACCEPTED_FILE_TYPES, 'text/tab-separated-values'].
+     * The reader still decides from the file's contents and extension, so an
+     * accepted type never makes an unreadable file importable.
+     *
+     * @param  array<string>|Closure  $types
+     */
+    public function acceptedFileTypes(array | Closure $types): static
+    {
+        $this->acceptedFileTypes = $types;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getAcceptedFileTypes(): array
+    {
+        return array_values($this->evaluate($this->acceptedFileTypes) ?? static::ACCEPTED_FILE_TYPES);
     }
 
     /**

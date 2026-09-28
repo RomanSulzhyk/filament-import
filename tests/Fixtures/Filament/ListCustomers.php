@@ -37,6 +37,10 @@ class ListCustomers extends ListRecords
                 ->optionsFormComponents([TextInput::make('default_city')->required()])
                 ->additionalData(fn (array $data) => ['city' => $data['default_city']]),
 
+            // A system that labels CSV files with a type the defaults lack.
+            ExcelImportAction::make('importWithExtraTypes')
+                ->acceptedFileTypes([...ExcelImportAction::ACCEPTED_FILE_TYPES, 'application/octet-stream']),
+
             // An importer with its own options form, as in the Filament docs.
             ExcelImportAction::make('importWithOptions')
                 ->importer(CustomerOptionsImporter::class)
