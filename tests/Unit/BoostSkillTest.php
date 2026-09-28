@@ -41,7 +41,10 @@ it('ships a Boost guideline that renders as Blade', function () {
 it('names only real methods and config keys in context7.json', function () {
     $context = json_decode(file_get_contents(__DIR__.'/../../context7.json'), true, flags: JSON_THROW_ON_ERROR);
 
-    expect($context['rules'])->not->toBeEmpty()
+    // Context7 rejects a description over 200 characters.
+    expect(mb_strlen($context['description']))->toBeLessThanOrEqual(200)
+        ->and(mb_strlen($context['projectTitle']))->toBeLessThanOrEqual(100)
+        ->and($context['rules'])->not->toBeEmpty()
         ->and(method_exists(ExcelImportAction::class, 'syncRowLimit'))->toBeTrue()
         ->and(method_exists(ExcelImportAction::class, 'importer'))->toBeTrue()
         ->and(config('filament-import.sync_row_limit'))->toBe(2000);

@@ -1,7 +1,7 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
   "projectTitle": "Excel & CSV Import for Filament (romansulzhyk/filament-import)",
-  "description": "Import CSV, TSV and Excel .xlsx files into Filament v4 and v5 resources synchronously, with no queue worker: delimiter and encoding detection, zero-config from $fillable or existing Filament Importer classes, header matching in 63 locales, upserts, validation and a failed-rows .xlsx report.",
+  "description": "Import CSV, TSV and Excel .xlsx files into Filament v4 and v5 resources with no queue: encoding and delimiter detection, header matching, upserts and a failed-rows report.",
   "folders": [],
   "excludeFolders": [
     "tests",
