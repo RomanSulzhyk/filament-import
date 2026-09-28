@@ -26,6 +26,9 @@ class FillableImporter extends Importer
     /** @var list<string> */
     protected array $upsertKeys = [];
 
+    /** @var array<string, mixed> */
+    protected array $fixedValues = [];
+
     /**
      * Every attribute in `$fillable` and not in `$hidden`, optionally narrowed
      * with $only and $except. A column whose rules include `required`, and
@@ -71,15 +74,31 @@ class FillableImporter extends Importer
      * @param  class-string<Model>  $modelClass
      * @param  array<ImportColumn>  $columns
      * @param  list<string>  $upsertKeys
+     * @param  array<string, mixed>  $fixedValues  Set on every record after the file's values.
      */
-    public function using(string $modelClass, array $columns, array $upsertKeys = []): static
+    public function using(string $modelClass, array $columns, array $upsertKeys = [], array $fixedValues = []): static
     {
         $this->modelClass = $modelClass;
         $this->columns = $columns;
         $this->upsertKeys = array_values($upsertKeys);
+        $this->fixedValues = $fixedValues;
         unset($this->cachedColumns);
 
         return $this;
+    }
+
+    /**
+     * The developer's fixed values are set directly, not through $fillable:
+     * they come from code, never from the file, and often hold keys such as
+     * a parent id that are deliberately not mass assignable.
+     */
+    public function fillRecord(): void
+    {
+        parent::fillRecord();
+
+        if ($this->fixedValues !== []) {
+            $this->record->forceFill($this->fixedValues);
+        }
     }
 
     public function getCachedColumns(): array
@@ -111,7 +130,9 @@ class FillableImporter extends Importer
         $match = [];
 
         foreach ($this->upsertKeys as $key) {
-            $value = $this->data[$key] ?? null;
+            // A fixed value is what the record will hold, so it is also what
+            // identifies the record to update.
+            $value = array_key_exists($key, $this->fixedValues) ? $this->fixedValues[$key] : ($this->data[$key] ?? null);
 
             if (blank($value)) {
                 return new $this->modelClass;

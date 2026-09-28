@@ -3,7 +3,8 @@
 namespace RomanSulzhyk\FilamentImport\Mapping;
 
 /**
- * Common field names in the languages spreadsheets most often arrive in.
+ * Common field names in every language Filament is translated into, one
+ * file per language in resources/synonyms.
  *
  * A header matches a synonym only when the whole header equals it after
  * normalization, never by containment or similar spelling, so "Місто" fills a
@@ -18,100 +19,82 @@ namespace RomanSulzhyk\FilamentImport\Mapping;
  */
 class HeaderSynonyms
 {
-    /** @var array<string, array{keys: list<string>, words: list<string>, given?: list<string>}> */
-    public const GROUPS = [
-        'name' => [
-            'keys' => ['name', 'fullname'],
-            'words' => ['ПІБ', 'Назва', 'ФИО', 'Название', 'Vollständiger Name', 'Nom complet', 'Nombre completo', 'Nome completo', 'Imię i nazwisko', 'Naam'],
-            // First names only. They fill a full-name field only when the file
-            // has no surname column, or the stored name would lose the surname.
-            'given' => ["Ім'я", 'Імя', 'Имя', 'Nombre', 'Nome', 'Imię'],
-        ],
-        'first_name' => [
-            'keys' => ['firstname', 'givenname'],
-            'words' => ["Ім'я", 'Імя', 'Имя', 'Vorname', 'Prénom', 'Imię', 'Voornaam'],
-        ],
-        'last_name' => [
-            'keys' => ['lastname', 'surname', 'familyname'],
-            'words' => ['Прізвище', 'Фамилия', 'Nachname', 'Nom de famille', 'Apellido', 'Apellidos', 'Cognome', 'Sobrenome', 'Nazwisko', 'Achternaam'],
-        ],
-        'email' => [
-            'keys' => ['email', 'emailaddress', 'mail'],
-            'words' => ['Ел. пошта', 'Електронна пошта', 'Эл. почта', 'Электронная почта', 'E-Mail-Adresse', 'Courriel', 'Adresse e-mail', 'Correo electrónico', 'Posta elettronica', 'E-poczta', 'Adres e-mail'],
-        ],
-        'phone' => [
-            'keys' => ['phone', 'phonenumber', 'telephone', 'tel'],
-            'words' => ['Телефон', 'Тел', 'Номер телефону', 'Номер телефона', 'Telefon', 'Telefonnummer', 'Téléphone', 'Teléfono', 'Telefono', 'Telefone', 'Telefoon'],
-        ],
-        'mobile' => [
-            'keys' => ['mobile', 'mobilephone', 'mobilenumber', 'cell', 'cellphone'],
-            'words' => ['Мобільний', 'Мобильный', 'Handy', 'Móvil', 'Cellulare', 'Celular'],
-        ],
-        'city' => [
-            'keys' => ['city', 'town'],
-            'words' => ['Місто', 'Город', 'Stadt', 'Ort', 'Ville', 'Ciudad', 'Città', 'Cidade', 'Miasto', 'Stad'],
-        ],
-        'country' => [
-            'keys' => ['country'],
-            'words' => ['Країна', 'Страна', 'Land', 'Pays', 'País', 'Paese', 'Kraj'],
-        ],
-        'address' => [
-            'keys' => ['address', 'streetaddress', 'address1', 'addressline1'],
-            'words' => ['Адреса', 'Адрес', 'Adresse', 'Anschrift', 'Dirección', 'Direccion', 'Indirizzo', 'Endereço', 'Adres'],
-        ],
-        'street' => [
-            'keys' => ['street'],
-            'words' => ['Вулиця', 'Улица', 'Straße', 'Strasse', 'Calle', 'Rua', 'Ulica'],
-        ],
-        'postal_code' => [
-            'keys' => ['zip', 'zipcode', 'postcode', 'postalcode'],
-            'words' => ['Індекс', 'Поштовий індекс', 'Индекс', 'Почтовый индекс', 'PLZ', 'Postleitzahl', 'Code postal', 'Código postal', 'Codice postale', 'Kod pocztowy'],
-        ],
-        'company' => [
-            'keys' => ['company', 'companyname', 'organization', 'organisation'],
-            'words' => ['Компанія', 'Компания', 'Організація', 'Организация', 'Firma', 'Unternehmen', 'Entreprise', 'Société', 'Empresa', 'Azienda', 'Bedrijf'],
-        ],
-        'price' => [
-            'keys' => ['price'],
-            'words' => ['Ціна', 'Цена', 'Preis', 'Prix', 'Precio', 'Prezzo', 'Preço', 'Cena', 'Prijs'],
-        ],
-        'quantity' => [
-            'keys' => ['quantity', 'qty'],
-            'words' => ['Кількість', 'Количество', 'Menge', 'Anzahl', 'Quantité', 'Cantidad', 'Quantità', 'Quantidade', 'Ilość', 'Aantal'],
-        ],
-        'description' => [
-            'keys' => ['description'],
-            'words' => ['Опис', 'Описание', 'Beschreibung', 'Descripción', 'Descrizione', 'Descrição', 'Opis', 'Omschrijving'],
-        ],
-        'title' => [
-            'keys' => ['title'],
-            'words' => ['Заголовок', 'Titel', 'Titre', 'Título', 'Titolo', 'Tytuł'],
-        ],
-        'sku' => [
-            'keys' => ['sku'],
-            'words' => ['Артикул', 'Artikelnummer'],
-        ],
-        'category' => [
-            'keys' => ['category'],
-            'words' => ['Категорія', 'Категория', 'Kategorie', 'Catégorie', 'Categoría', 'Categoria', 'Kategoria', 'Categorie'],
-        ],
-        'notes' => [
-            'keys' => ['notes', 'note'],
-            'words' => ['Примітка', 'Примітки', 'Примечание', 'Notiz', 'Notizen', 'Bemerkung', 'Anmerkungen', 'Remarque', 'Uwagi', 'Opmerking'],
-        ],
-        'comment' => [
-            'keys' => ['comment', 'comments'],
-            'words' => ['Коментар', 'Комментарий', 'Kommentar', 'Commentaire', 'Comentario', 'Commento', 'Comentário', 'Komentarz'],
-        ],
-        'status' => [
-            'keys' => ['status'],
-            'words' => ['Статус', 'Statut'],
-        ],
-        'date_of_birth' => [
-            'keys' => ['dateofbirth', 'birthdate', 'birthday', 'dob'],
-            'words' => ['Дата народження', 'Дата рождения', 'Geburtsdatum', 'Date de naissance', 'Fecha de nacimiento', 'Data di nascita', 'Data de nascimento', 'Data urodzenia', 'Geboortedatum'],
-        ],
+    /**
+     * The English keys that identify each field. Every key belongs to exactly
+     * one field, so related fields never trade values.
+     *
+     * @var array<string, list<string>>
+     */
+    public const KEYS = [
+        'name' => ['name', 'fullname'],
+        'first_name' => ['firstname', 'givenname'],
+        'last_name' => ['lastname', 'surname', 'familyname'],
+        'email' => ['email', 'emailaddress', 'mail'],
+        'phone' => ['phone', 'phonenumber', 'telephone', 'tel'],
+        'mobile' => ['mobile', 'mobilephone', 'mobilenumber', 'cell', 'cellphone'],
+        'city' => ['city', 'town'],
+        'country' => ['country'],
+        'address' => ['address', 'streetaddress', 'address1', 'addressline1'],
+        'street' => ['street'],
+        'postal_code' => ['zip', 'zipcode', 'postcode', 'postalcode'],
+        'company' => ['company', 'companyname', 'organization', 'organisation'],
+        'price' => ['price'],
+        'quantity' => ['quantity', 'qty'],
+        'description' => ['description'],
+        'title' => ['title'],
+        'sku' => ['sku'],
+        'category' => ['category'],
+        'notes' => ['notes', 'note'],
+        'comment' => ['comment', 'comments'],
+        'status' => ['status'],
+        'date_of_birth' => ['dateofbirth', 'birthdate', 'birthday', 'dob'],
     ];
+
+    /** @var array<string, array{keys: list<string>, words: list<string>, given: list<string>}>|null */
+    protected static ?array $groups = null;
+
+    /**
+     * Every field with its keys and its words from all languages in
+     * resources/synonyms. Each file holds one language, keyed by field;
+     * "given" lists first names that may fill a full-name field.
+     *
+     * @return array<string, array{keys: list<string>, words: list<string>, given: list<string>}>
+     */
+    public static function groups(): array
+    {
+        if (static::$groups !== null) {
+            return static::$groups;
+        }
+
+        $groups = [];
+
+        foreach (static::KEYS as $field => $keys) {
+            $groups[$field] = ['keys' => $keys, 'words' => [], 'given' => []];
+        }
+
+        foreach (static::languageFiles() as $file) {
+            foreach (require $file as $field => $words) {
+                if ($field === 'given') {
+                    $groups['name']['given'] = [...$groups['name']['given'], ...$words];
+                } elseif (isset($groups[$field])) {
+                    $groups[$field]['words'] = [...$groups[$field]['words'], ...$words];
+                }
+            }
+        }
+
+        return static::$groups = $groups;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function languageFiles(): array
+    {
+        $files = glob(dirname(__DIR__, 2).'/resources/synonyms/*.php') ?: [];
+        sort($files);
+
+        return $files;
+    }
 
     /**
      * Compact normalized synonyms for a column, given the compact forms of its
@@ -125,15 +108,22 @@ class HeaderSynonyms
     {
         $words = [];
 
-        foreach (static::GROUPS as $group) {
+        foreach (static::groups() as $field => $group) {
             if (array_intersect($compactTargets, $group['keys']) === []) {
                 continue;
             }
 
             $groupWords = $group['words'];
 
-            if (isset($group['given']) && ! static::hasSurnameHeader($compactHeaders)) {
+            // "Ім'я", "Nombre" or "이름" heads a full-name column when the file
+            // has no surname column, and a first-name column when it has one,
+            // so a full name never lands in a first-name field. Without a
+            // surname column the matcher also counts first_name as a claimant
+            // (see blockedWords()), so a model with both fields gets neither.
+            if ($field === 'name' && ! static::hasSurnameHeader($compactHeaders)) {
                 $groupWords = [...$groupWords, ...$group['given']];
+            } elseif ($field === 'first_name' && static::hasSurnameHeader($compactHeaders)) {
+                $groupWords = [...$groupWords, ...static::groups()['name']['given']];
             }
 
             foreach ($groupWords as $word) {
@@ -145,13 +135,34 @@ class HeaderSynonyms
     }
 
     /**
+     * Words a column cannot take but still competes for: without a surname
+     * column, a first name is as good a guess for first_name as for name.
+     *
+     * @param  list<string>  $compactTargets
+     * @param  list<string>  $compactHeaders
+     * @return list<string>
+     */
+    public static function blockedWords(array $compactTargets, array $compactHeaders = []): array
+    {
+        if (array_intersect($compactTargets, static::KEYS['first_name']) === [] || static::hasSurnameHeader($compactHeaders)) {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(array_map(
+            fn (string $word) => HeaderNormalizer::compact($word),
+            static::groups()['name']['given'],
+        ))));
+    }
+
+    /**
      * @param  list<string>  $compactHeaders
      */
-    protected static function hasSurnameHeader(array $compactHeaders): bool
+    public static function hasSurnameHeader(array $compactHeaders): bool
     {
-        $surname = [...static::GROUPS['last_name']['keys'], ...array_map(
+        $lastName = static::groups()['last_name'];
+        $surname = [...$lastName['keys'], ...array_map(
             fn (string $word) => HeaderNormalizer::compact($word),
-            static::GROUPS['last_name']['words'],
+            $lastName['words'],
         )];
 
         return array_intersect($compactHeaders, $surname) !== [];

@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'name' => ['Navn', 'Fulde navn'],
+    'first_name' => ['Fornavn'],
+    'last_name' => ['Efternavn'],
+    'email' => ['E-mailadresse'],
+    'phone' => ['Telefon', 'Telefonnummer', 'Tlf'],
+    'mobile' => ['Mobil', 'Mobilnummer'],
+    'city' => ['Bynavn'],
+    'country' => ['Land'],
+    'address' => ['Adresse'],
+    'street' => ['Vejnavn', 'Gade'],
+    'postal_code' => ['Postnummer', 'Postnr'],
+    'company' => ['Firma', 'Virksomhed', 'Firmanavn'],
+    'price' => ['Pris'],
+    'quantity' => ['Antal', 'Mængde'],
+    'description' => ['Beskrivelse'],
+    'title' => ['Titel'],
+    'sku' => ['Varenummer', 'Varenr'],
+    'category' => ['Kategori'],
+    'notes' => ['Noter', 'Bemærkning', 'Bemærkninger'],
+    'comment' => ['Kommentar'],
+    'date_of_birth' => ['Fødselsdato'],
+];

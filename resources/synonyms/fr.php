@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'name' => ['Nom complet'],
+    'first_name' => ['Prénom'],
+    'last_name' => ['Nom de famille'],
+    'email' => ['Courriel', 'Adresse e-mail', 'Adresse électronique'],
+    'phone' => ['Téléphone', 'Numéro de téléphone'],
+    'mobile' => ['Téléphone portable', 'Téléphone mobile'],
+    'city' => ['Ville', 'Localité'],
+    'country' => ['Pays'],
+    'address' => ['Adresse'],
+    'postal_code' => ['Code postal'],
+    'company' => ['Entreprise', 'Société', 'Raison sociale'],
+    'price' => ['Prix'],
+    'quantity' => ['Quantité', 'Qté'],
+    'description' => ['Descriptif'],
+    'title' => ['Titre'],
+    'sku' => ['UGS', 'Code article'],
+    'category' => ['Catégorie'],
+    'notes' => ['Remarque', 'Remarques'],
+    'comment' => ['Commentaire', 'Commentaires'],
+    'status' => ['Statut'],
+    'date_of_birth' => ['Date de naissance'],
+];

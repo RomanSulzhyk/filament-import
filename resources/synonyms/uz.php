@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'name' => ['To\'liq ism', 'Ism familiya', 'Ism-familiya'],
+    'first_name' => ['Ism', 'Ismi', 'Исм'],
+    'last_name' => ['Familiya', 'Familiyasi'],
+    'email' => ['Elektron pochta', 'E-pochta'],
+    'phone' => ['Telefon', 'Telefon raqami'],
+    'mobile' => ['Mobil telefon'],
+    'city' => ['Shahar'],
+    'country' => ['Mamlakat'],
+    'address' => ['Manzil', 'Манзил'],
+    'street' => ['Ko\'cha'],
+    'postal_code' => ['Pochta indeksi'],
+    'company' => ['Kompaniya', 'Tashkilot'],
+    'price' => ['Narx', 'Narxi', 'Нарх'],
+    'quantity' => ['Miqdor', 'Миқдор'],
+    'description' => ['Tavsif'],
+    'title' => ['Sarlavha'],
+    'sku' => ['Artikul'],
+    'category' => ['Kategoriya', 'Toifa'],
+    'notes' => ['Eslatma'],
+    'comment' => ['Izoh'],
+    'status' => ['Holat'],
+    'date_of_birth' => ['Tug\'ilgan sana', 'Туғилган сана'],
+];

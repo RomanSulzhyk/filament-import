@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'name' => ['Vardas ir pavardė', 'Vardas, pavardė', 'Pavadinimas'],
+    'given' => ['Vardas'],
+    'last_name' => ['Pavardė'],
+    'email' => ['El. paštas', 'Elektroninis paštas'],
+    'phone' => ['Telefonas', 'Telefono numeris'],
+    'mobile' => ['Mobilusis telefonas'],
+    'city' => ['Miestas'],
+    'country' => ['Šalis'],
+    'address' => ['Adresas'],
+    'street' => ['Gatvė'],
+    'postal_code' => ['Pašto kodas'],
+    'company' => ['Įmonė', 'Įmonės pavadinimas'],
+    'price' => ['Kaina'],
+    'quantity' => ['Kiekis'],
+    'description' => ['Aprašymas'],
+    'sku' => ['Prekės kodas'],
+    'category' => ['Kategorija'],
+    'notes' => ['Pastabos', 'Pastaba'],
+    'comment' => ['Komentaras'],
+    'status' => ['Būsena', 'Statusas'],
+    'date_of_birth' => ['Gimimo data'],
+];

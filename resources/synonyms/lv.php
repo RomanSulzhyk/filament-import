@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'name' => ['Vārds, uzvārds', 'Vārds un uzvārds', 'Nosaukums'],
+    'given' => ['Vārds'],
+    'last_name' => ['Uzvārds'],
+    'email' => ['E-pasts', 'E-pasta adrese'],
+    'phone' => ['Tālrunis', 'Telefons', 'Tālruņa numurs'],
+    'mobile' => ['Mobilais tālrunis'],
+    'city' => ['Pilsēta'],
+    'country' => ['Valsts'],
+    'address' => ['Adrese'],
+    'street' => ['Iela'],
+    'postal_code' => ['Pasta indekss'],
+    'company' => ['Uzņēmums'],
+    'price' => ['Cena'],
+    'quantity' => ['Daudzums'],
+    'description' => ['Apraksts'],
+    'title' => ['Virsraksts'],
+    'sku' => ['Artikuls'],
+    'category' => ['Kategorija'],
+    'notes' => ['Piezīmes', 'Piezīme'],
+    'comment' => ['Komentārs'],
+    'status' => ['Statuss'],
+    'date_of_birth' => ['Dzimšanas datums'],
+];

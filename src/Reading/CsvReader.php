@@ -2,14 +2,14 @@
 
 namespace RomanSulzhyk\FilamentImport\Reading;
 
-use League\Csv\CharsetConverter;
 use League\Csv\Info;
 use League\Csv\Reader;
 
 /**
  * Reads CSV the way Filament's own importer does (delimiter sniffing across
- * , ; | and tab, UTF-8 output), and additionally tolerates a BOM, Windows-1251
- * and Latin-1 files, which is what spreadsheets exported from Excel often are.
+ * , ; | and tab, UTF-8 output), and additionally reads what Excel and other
+ * tools really export: a BOM, UTF-16, and the Windows code pages of Excel's
+ * "CSV" format in every language (see Encoding).
  */
 class CsvReader implements SpreadsheetReader
 {
@@ -23,20 +23,31 @@ class CsvReader implements SpreadsheetReader
     /** File line that holds the header row. Leading blank lines are skipped. */
     protected int $headerLine = 1;
 
-    public function __construct(protected string $path, protected ?string $delimiter = null)
+    public function __construct(protected string $path, protected ?string $delimiter = null, ?string $encoding = null)
     {
-        $this->csv = Reader::createFromPath($path, 'r');
+        $encoding = $encoding ?? config('filament-import.csv_encoding') ?: static::detectEncoding($path, app()->getLocale());
+        $encoding = $encoding === null ? null : Encoding::canonical($encoding);
+
+        if ($encoding === null || $encoding === 'UTF-8') {
+            $this->csv = Reader::createFromPath($path, 'r');
+        } else {
+            // Legacy and UTF-16 files are decoded whole: a stream filter could
+            // split a multibyte character between two chunks. Such files are
+            // small, since the import itself is limited to a few thousand rows.
+            $text = Encoding::decode((string) file_get_contents($path), $encoding);
+
+            if ($text === null) {
+                throw new UnsupportedSpreadsheet(__('filament-import::import.errors.unreadable'));
+            }
+
+            $this->csv = Reader::createFromString($text);
+        }
+
         $this->csv->skipInputBOM();
 
         // Keep physical blank lines so reported line numbers match the file.
         // Blank records are skipped explicitly in rows().
         $this->csv->includeEmptyRecords();
-
-        $encoding = static::detectEncoding($path);
-
-        if ($encoding !== null && strtoupper($encoding) !== 'UTF-8') {
-            CharsetConverter::addTo($this->csv, $encoding, 'UTF-8');
-        }
 
         $this->csv->setDelimiter($delimiter ?? $this->sniffDelimiter());
     }
@@ -86,9 +97,13 @@ class CsvReader implements SpreadsheetReader
         return (string) array_key_first($stats) ?: ',';
     }
 
-    public static function detectEncoding(string $path): ?string
+    public static function detectEncoding(string $path, ?string $locale = null): ?string
     {
         $sample = (string) file_get_contents($path, length: static::SAMPLE_BYTES);
+
+        if (($utf16 = Encoding::detectUtf16($sample)) !== null) {
+            return $utf16;
+        }
 
         // The sample is a fixed number of bytes, so it can end in the middle of
         // a multibyte character. Judging that truncated tail would make a valid
@@ -97,6 +112,15 @@ class CsvReader implements SpreadsheetReader
 
         if ($sample === '' || mb_check_encoding($sample, 'UTF-8')) {
             return 'UTF-8';
+        }
+
+        // Scripts other than Latin and Cyrillic are checked first: decoded as
+        // Windows-1251, a Greek or Arabic file would pass for Cyrillic.
+        $hint = Encoding::forLocale($locale);
+        $latinHint = in_array($hint, ['Windows-1250', 'Windows-1254', 'Windows-1257', 'Windows-1258'], true);
+
+        if ($hint !== null && ! $latinHint && Encoding::hint($sample, $locale) !== null) {
+            return $hint;
         }
 
         // Every byte decodes in both Windows-1251 and Windows-1252, so the
@@ -118,7 +142,7 @@ class CsvReader implements SpreadsheetReader
             }
 
             $hasCyrillic = preg_match('/[\x{0410}-\x{044F}]/u', $word) === 1;
-            // A Latin "i" is not evidence: Ukrainian typed on a Russian layout
+            // A Latin "i" is not evidence: Ukrainian typed on a keyboard layout without "і"
             // often uses it in place of "і" ("Мiсто", "Львiв").
             $hasLatin = preg_match('/[A-HJ-Za-hj-z]/', $word) === 1;
 
@@ -131,6 +155,10 @@ class CsvReader implements SpreadsheetReader
 
         if ($pure > 0 && $pure > $mixed) {
             return 'Windows-1251';
+        }
+
+        if ($latinHint && Encoding::hint($sample, $locale) !== null) {
+            return $hint;
         }
 
         if (mb_check_encoding(@mb_convert_encoding($sample, 'UTF-8', 'Windows-1252'), 'UTF-8')) {

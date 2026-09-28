@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'name' => ['Celé jméno', 'Jméno a příjmení', 'Název'],
+    'given' => ['Jméno'],
+    'first_name' => ['Křestní jméno'],
+    'last_name' => ['Příjmení'],
+    'email' => ['E-mailová adresa'],
+    'phone' => ['Telefon', 'Telefonní číslo'],
+    'mobile' => ['Mobil', 'Mobilní telefon'],
+    'city' => ['Město', 'Obec'],
+    'country' => ['Země'],
+    'address' => ['Adresa'],
+    'street' => ['Ulice'],
+    'postal_code' => ['PSČ', 'Poštovní směrovací číslo'],
+    'company' => ['Firma', 'Společnost'],
+    'price' => ['Cena'],
+    'quantity' => ['Množství', 'Počet'],
+    'description' => ['Popis'],
+    'sku' => ['Kód produktu', 'Katalogové číslo'],
+    'category' => ['Kategorie'],
+    'notes' => ['Poznámka', 'Poznámky'],
+    'comment' => ['Komentář'],
+    'status' => ['Stav'],
+    'date_of_birth' => ['Datum narození'],
+];

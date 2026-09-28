@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'name' => ['Nimi', 'Täisnimi', 'Nimetus'],
+    'first_name' => ['Eesnimi'],
+    'last_name' => ['Perekonnanimi', 'Perenimi'],
+    'email' => ['E-post', 'E-posti aadress'],
+    'phone' => ['Telefon', 'Telefoninumber'],
+    'mobile' => ['Mobiil', 'Mobiiltelefon'],
+    'city' => ['Linn'],
+    'country' => ['Riik'],
+    'address' => ['Aadress'],
+    'street' => ['Tänav'],
+    'postal_code' => ['Postiindeks'],
+    'company' => ['Ettevõte', 'Firma'],
+    'price' => ['Hind'],
+    'quantity' => ['Kogus'],
+    'description' => ['Kirjeldus'],
+    'title' => ['Pealkiri'],
+    'sku' => ['Tootekood'],
+    'category' => ['Kategooria'],
+    'notes' => ['Märkus', 'Märkused'],
+    'comment' => ['Kommentaar'],
+    'status' => ['Staatus', 'Olek'],
+    'date_of_birth' => ['Sünnikuupäev'],
+];

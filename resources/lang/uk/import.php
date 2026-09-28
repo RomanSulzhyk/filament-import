@@ -6,6 +6,7 @@ return [
         'label' => 'Імпорт',
         'modal_heading' => 'Імпорт: :label',
         'submit' => 'Імпортувати',
+        'download_template' => 'Завантажити шаблон',
     ],
 
     'steps' => [

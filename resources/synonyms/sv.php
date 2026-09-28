@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'name' => ['Namn', 'Fullständigt namn'],
+    'first_name' => ['Förnamn'],
+    'last_name' => ['Efternamn'],
+    'email' => ['E-post', 'E-postadress'],
+    'phone' => ['Telefon', 'Telefonnummer'],
+    'mobile' => ['Mobil', 'Mobilnummer', 'Mobiltelefon'],
+    'city' => ['Stad', 'Ort', 'Postort'],
+    'country' => ['Land'],
+    'address' => ['Adress', 'Gatuadress'],
+    'street' => ['Gata'],
+    'postal_code' => ['Postnummer'],
+    'company' => ['Företag', 'Företagsnamn'],
+    'price' => ['Pris'],
+    'quantity' => ['Antal', 'Kvantitet'],
+    'description' => ['Beskrivning'],
+    'title' => ['Titel'],
+    'sku' => ['Artikelnummer', 'Artikelnr'],
+    'category' => ['Kategori'],
+    'notes' => ['Anteckning', 'Anteckningar'],
+    'comment' => ['Kommentar'],
+    'date_of_birth' => ['Födelsedatum'],
+];

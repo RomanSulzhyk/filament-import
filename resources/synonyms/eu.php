@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'name' => ['Izen osoa', 'Izen-abizenak'],
+    'given' => ['Izena'],
+    'last_name' => ['Abizena', 'Abizenak'],
+    'email' => ['Helbide elektronikoa', 'Posta elektronikoa'],
+    'phone' => ['Telefonoa', 'Telefono zenbakia'],
+    'mobile' => ['Mugikorra'],
+    'city' => ['Hiria'],
+    'country' => ['Herrialdea'],
+    'address' => ['Helbidea'],
+    'street' => ['Kalea'],
+    'postal_code' => ['Posta kodea'],
+    'company' => ['Enpresa'],
+    'price' => ['Prezioa'],
+    'quantity' => ['Kopurua'],
+    'description' => ['Deskribapena'],
+    'title' => ['Izenburua'],
+    'category' => ['Kategoria'],
+    'notes' => ['Oharrak'],
+    'comment' => ['Iruzkina', 'Iruzkinak'],
+    'status' => ['Egoera'],
+    'date_of_birth' => ['Jaiotze data'],
+];

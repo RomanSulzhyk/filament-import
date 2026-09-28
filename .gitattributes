@@ -15,6 +15,7 @@
 /AGENTS.md          export-ignore
 /.claude            export-ignore
 /.cursor            export-ignore
+/context7.json      export-ignore
 
 * text=auto eol=lf
 *.xlsx binary

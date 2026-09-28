@@ -121,7 +121,7 @@ it('R-5: a failing prune is reported and does not lose the report', function () 
 
     $disk = Mockery::mock(Filesystem::class);
     $disk->shouldReceive('files')->andThrow(new RuntimeException('ListBucket denied'));
-    $disk->shouldReceive('put')->once()->andReturn(true);
+    $disk->shouldReceive('writeStream')->once()->andReturn(true);
     Storage::shouldReceive('disk')->andReturn($disk);
 
     $path = FailedRowsWriter::write(['name'], [new RowFailure(2, ['name' => 'x'], ['Bad'])]);

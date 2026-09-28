@@ -7,11 +7,17 @@
         "filament",
         "filamentphp",
         "filament-plugin",
+        "filament-v4",
+        "filament-v5",
         "import",
         "excel",
+        "excel-import",
         "csv",
+        "csv-import",
         "xlsx",
-        "spreadsheet"
+        "spreadsheet",
+        "importer",
+        "laravel-boost"
     ],
     "license": "MIT",
     "homepage": "https://github.com/RomanSulzhyk/filament-import",

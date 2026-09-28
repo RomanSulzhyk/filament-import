@@ -32,6 +32,14 @@ return [
     'match_threshold' => 0.85,
 
     /*
+     * Encoding of uploaded CSV files, or null to detect it. Detection covers
+     * UTF-8, UTF-16, Windows-1251 and Windows-1252, plus the Windows code page
+     * of the app's locale (Windows-1250 for Polish, Shift_JIS for Japanese).
+     * Set this when your users' files come from a different language.
+     */
+    'csv_encoding' => env('FILAMENT_IMPORT_CSV_ENCODING'),
+
+    /*
      * An .xlsx is a ZIP archive. These limits refuse files whose contents
      * would expand far beyond their upload size before they are parsed.
      */

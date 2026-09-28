@@ -35,7 +35,37 @@ class FailedRowsWriter
             report($e);
         }
 
+        $headers = static::withoutPreviousReportColumns($headers);
         $local = tempnam(sys_get_temp_dir(), 'filament-import-failures-');
+
+        try {
+            static::writeLocal($local, $headers, $failures);
+
+            $path = static::directory() . '/' . Str::uuid() . '.xlsx';
+            $stream = fopen($local, 'rb');
+
+            try {
+                if (Storage::disk(static::disk())->writeStream($path, $stream) === false) {
+                    throw new \RuntimeException("The failed-rows report could not be written to [{$path}].");
+                }
+            } finally {
+                if (is_resource($stream)) {
+                    fclose($stream);
+                }
+            }
+        } finally {
+            @unlink($local);
+        }
+
+        return $path;
+    }
+
+    /**
+     * @param  list<string>  $headers
+     * @param  list<RowFailure>  $failures
+     */
+    protected static function writeLocal(string $local, array $headers, array $failures): void
+    {
         $writer = new Writer;
         $writer->openToFile($local);
 
@@ -56,16 +86,67 @@ class FailedRowsWriter
         } finally {
             $writer->close();
         }
+    }
 
-        $path = static::directory() . '/' . Str::uuid() . '.xlsx';
+    /**
+     * A user who fixes a report and uploads it again brings its row and
+     * errors columns along. They are dropped, so a second report does not
+     * grow "Row_2" and "Errors_2" columns full of stale reasons. Only a pair
+     * is dropped: a lone "Errors" column in the user's own file is kept.
+     *
+     * @param  list<string>  $headers
+     * @return list<string>
+     */
+    public static function withoutPreviousReportColumns(array $headers): array
+    {
+        [$rowNames, $errorNames] = static::reportColumnNames();
+        $base = fn (string $header) => mb_strtolower(trim(preg_replace('/_\d+$/', '', $header)));
 
-        try {
-            Storage::disk(static::disk())->put($path, (string) file_get_contents($local));
-        } finally {
-            @unlink($local);
+        $rows = array_filter($headers, fn ($header) => in_array($base($header), $rowNames, true));
+        $errors = array_filter($headers, fn ($header) => in_array($base($header), $errorNames, true));
+
+        if ($rows === [] || $errors === []) {
+            return $headers;
         }
 
-        return $path;
+        return array_values(array_diff($headers, $rows, $errors));
+    }
+
+    /** @var array{0: list<string>, 1: list<string>}|null */
+    protected static ?array $reportColumnNames = null;
+
+    /**
+     * The report's column names in every language, since the user who
+     * re-uploads it may have downloaded it in another locale.
+     *
+     * @return array{0: list<string>, 1: list<string>}
+     */
+    protected static function reportColumnNames(): array
+    {
+        if (static::$reportColumnNames === null) {
+            $rows = [];
+            $errors = [];
+
+            foreach (glob(dirname(__DIR__, 2).'/resources/lang/*/import.php') ?: [] as $file) {
+                $strings = require $file;
+                $rows[] = mb_strtolower($strings['failures_file']['row_column'] ?? '');
+                $errors[] = mb_strtolower($strings['failures_file']['errors_column'] ?? '');
+            }
+
+            static::$reportColumnNames = [$rows, $errors];
+        }
+
+        [$rows, $errors] = static::$reportColumnNames;
+
+        // Published or app-level overrides for the current request's locale,
+        // read every time: under Octane the locale changes between requests.
+        $rows[] = mb_strtolower(__('filament-import::import.failures_file.row_column'));
+        $errors[] = mb_strtolower(__('filament-import::import.failures_file.errors_column'));
+
+        return [
+            array_values(array_unique(array_filter($rows))),
+            array_values(array_unique(array_filter($errors))),
+        ];
     }
 
     /**

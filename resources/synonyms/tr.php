@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'name' => ['Ad Soyad', 'Adı Soyadı', 'İsim Soyisim'],
+    'given' => ['İsim'],
+    'first_name' => ['Adı'],
+    'last_name' => ['Soyad', 'Soyadı', 'Soyisim'],
+    'email' => ['E-posta', 'E-posta Adresi'],
+    'phone' => ['Telefon', 'Telefon Numarası'],
+    'mobile' => ['Cep Telefonu', 'GSM'],
+    'city' => ['Şehir'],
+    'country' => ['Ülke'],
+    'address' => ['Adres'],
+    'street' => ['Sokak'],
+    'postal_code' => ['Posta Kodu'],
+    'company' => ['Şirket', 'Firma', 'Şirket Adı', 'Firma Adı'],
+    'price' => ['Fiyat', 'Birim Fiyat'],
+    'quantity' => ['Miktar', 'Adet'],
+    'description' => ['Açıklama'],
+    'title' => ['Başlık'],
+    'sku' => ['Stok Kodu'],
+    'category' => ['Kategori'],
+    'notes' => ['Notlar'],
+    'comment' => ['Yorum'],
+    'status' => ['Durum'],
+    'date_of_birth' => ['Doğum Tarihi'],
+];

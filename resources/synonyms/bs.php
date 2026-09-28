@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'name' => ['Ime i prezime', 'Puno ime', 'Naziv'],
+    'given' => ['Ime'],
+    'last_name' => ['Prezime'],
+    'email' => ['E-pošta', 'E-mail adresa'],
+    'phone' => ['Telefon', 'Broj telefona'],
+    'mobile' => ['Mobitel', 'Mobilni telefon'],
+    'city' => ['Grad', 'Mjesto'],
+    'country' => ['Država'],
+    'address' => ['Adresa'],
+    'street' => ['Ulica'],
+    'postal_code' => ['Poštanski broj'],
+    'company' => ['Firma', 'Preduzeće', 'Kompanija'],
+    'price' => ['Cijena'],
+    'quantity' => ['Količina'],
+    'description' => ['Opis'],
+    'title' => ['Naslov'],
+    'sku' => ['Šifra artikla', 'Šifra proizvoda'],
+    'category' => ['Kategorija'],
+    'notes' => ['Napomena', 'Napomene'],
+    'comment' => ['Komentar'],
+    'date_of_birth' => ['Datum rođenja'],
+];

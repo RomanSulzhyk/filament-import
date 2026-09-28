@@ -49,7 +49,9 @@ class HeuristicColumnMatcher implements ColumnMatcher
             $targetsByColumn[$column->getName()] = $targets;
             $synonymsByColumn[$column->getName()] = $synonyms;
 
-            foreach ($synonyms as $word) {
+            $compactTargets = array_map(fn ($target) => str_replace(' ', '', $target), $targets);
+
+            foreach ([...$synonyms, ...HeaderSynonyms::blockedWords($compactTargets, $compactHeaders)] as $word) {
                 $synonymClaims[$word] = ($synonymClaims[$word] ?? 0) + 1;
             }
         }
@@ -64,6 +66,18 @@ class HeuristicColumnMatcher implements ColumnMatcher
 
                 if ($score < 0.95 && in_array($compactHeaders[$index], $synonyms, true)) {
                     $score = 0.95;
+                }
+
+                // A bilingual header ("Email (メール)", "Name / 名前") matches
+                // through either half, just below a single-language match.
+                foreach (HeaderNormalizer::scriptParts($header) as $part) {
+                    $partScore = $this->score(HeaderNormalizer::normalize($part), $targetsByColumn[$column->getName()], $threshold);
+
+                    if ($partScore < 0.95 && in_array(HeaderNormalizer::compact($part), $synonyms, true)) {
+                        $partScore = 0.95;
+                    }
+
+                    $score = max($score, $partScore * 0.98);
                 }
 
                 if ($score > 0) {

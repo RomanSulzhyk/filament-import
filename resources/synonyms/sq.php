@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'name' => ['Emri i plotë', 'Emri dhe mbiemri'],
+    'given' => ['Emri'],
+    'last_name' => ['Mbiemri'],
+    'email' => ['Posta elektronike'],
+    'phone' => ['Telefoni', 'Numri i telefonit'],
+    'mobile' => ['Celulari'],
+    'city' => ['Qyteti'],
+    'country' => ['Shteti'],
+    'address' => ['Adresa'],
+    'street' => ['Rruga'],
+    'postal_code' => ['Kodi postar'],
+    'company' => ['Kompania'],
+    'price' => ['Çmimi'],
+    'quantity' => ['Sasia'],
+    'description' => ['Përshkrimi'],
+    'title' => ['Titulli'],
+    'category' => ['Kategoria'],
+    'notes' => ['Shënime', 'Shënim'],
+    'comment' => ['Komenti'],
+    'status' => ['Statusi'],
+    'date_of_birth' => ['Datëlindja', 'Data e lindjes'],
+];

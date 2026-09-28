@@ -6,8 +6,10 @@ use RomanSulzhyk\FilamentImport\Importing\FailedRowsWriter;
 use RomanSulzhyk\FilamentImport\Importing\FillableImporter;
 use RomanSulzhyk\FilamentImport\Importing\ImportResult;
 use RomanSulzhyk\FilamentImport\Importing\ImportRunner;
+use RomanSulzhyk\FilamentImport\Importing\TemplateWriter;
 use RomanSulzhyk\FilamentImport\Importing\TooManyRowsForSyncImport;
 use RomanSulzhyk\FilamentImport\Mapping\ColumnMatcher;
+use RomanSulzhyk\FilamentImport\Reading\Encoding;
 use RomanSulzhyk\FilamentImport\Reading\ReaderFactory;
 use RomanSulzhyk\FilamentImport\Reading\SpreadsheetReader;
 use RomanSulzhyk\FilamentImport\Reading\UnsupportedSpreadsheet;
@@ -25,12 +27,14 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use LogicException;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
 /**
@@ -85,6 +89,16 @@ class ExcelImportAction extends Action
 
     protected ?int $syncRowLimit = null;
 
+    protected ?string $csvEncoding = null;
+
+    protected bool $hasTemplateDownload = true;
+
+    /** @var array<string, mixed>|Closure */
+    protected array | Closure $additionalData = [];
+
+    /** @var array<\Filament\Schemas\Components\Component>|Closure */
+    protected array | Closure $optionsFormComponents = [];
+
     protected int $maxFileSizeKilobytes = 10240;
 
     public static function getDefaultName(): ?string
@@ -117,6 +131,23 @@ class ExcelImportAction extends Action
             'label' => Str::of(class_basename($this->resolveModel()))->headline()->plural()->toString(),
         ]));
         $this->modalSubmitActionLabel(__('filament-import::import.action.submit'));
+        $this->modalDescription(fn (): ?Action => $this->hasTemplateDownload ? $this->getModalAction('downloadTemplate') : null);
+
+        $this->registerModalActions([
+            Action::make('downloadTemplate')
+                ->label(__('filament-import::import.action.download_template'))
+                ->link()
+                ->visible(fn (): bool => $this->hasTemplateDownload)
+                ->action(function (): BinaryFileResponse {
+                    $name = Str::of(class_basename($this->resolveModel()))->kebab()->plural()->append('-template.xlsx')->toString();
+
+                    return response()
+                        ->download(TemplateWriter::write($this->getImportColumns()), $name, [
+                            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        ])
+                        ->deleteFileAfterSend();
+                }),
+        ]);
 
         $this->schema(function (): array {
             // Resolving the columns here surfaces configuration errors, such as
@@ -178,6 +209,7 @@ class ExcelImportAction extends Action
                             $this->getImportColumns(),
                         );
                     }),
+                ...$this->getOptionsFormComponents(),
             ];
         });
 
@@ -300,6 +332,72 @@ class ExcelImportAction extends Action
         return $this;
     }
 
+    /**
+     * Read every CSV in this encoding (for example "Windows-1250" or
+     * "Shift_JIS") instead of detecting it. Detection covers UTF-8, UTF-16,
+     * Windows-1251 and Windows-1252 in any app, and the code page of the
+     * app's locale; set this when files come from elsewhere.
+     */
+    public function csvEncoding(?string $encoding): static
+    {
+        $this->csvEncoding = $encoding === null ? null : Encoding::canonical($encoding);
+
+        return $this;
+    }
+
+    /**
+     * Values written to every imported record in zero-config mode, such as a
+     * parent key or a source tag. A closure receives the modal's form data as
+     * $data, including optionsFormComponents() fields. These attributes are
+     * never offered for mapping, and a file column can never override them.
+     *
+     * @param  array<string, mixed>|Closure  $data
+     */
+    public function additionalData(array | Closure $data): static
+    {
+        $this->additionalData = $data;
+
+        return $this;
+    }
+
+    /**
+     * Extra fields shown in the import modal, below the file and the column
+     * matching. Their values reach the importer as $this->options, merged over
+     * importerOptions(), exactly as the core ImportAction does, and the
+     * additionalData() closure as $data. An importer class's own
+     * getOptionsFormComponents() are shown automatically.
+     *
+     * @param  array<\Filament\Schemas\Components\Component>|Closure  $components
+     */
+    public function optionsFormComponents(array | Closure $components): static
+    {
+        $this->optionsFormComponents = $components;
+
+        return $this;
+    }
+
+    /**
+     * @return array<\Filament\Schemas\Components\Component>
+     */
+    public function getOptionsFormComponents(): array
+    {
+        return [
+            ...($this->importer !== null ? $this->importer::getOptionsFormComponents() : []),
+            ...$this->evaluate($this->optionsFormComponents),
+        ];
+    }
+
+    /**
+     * Show the "Download template" link in the modal: an .xlsx with one header
+     * per import column and the columns' examples. On by default.
+     */
+    public function templateDownload(bool $condition = true): static
+    {
+        $this->hasTemplateDownload = $condition;
+
+        return $this;
+    }
+
     public function maxFileSize(int $kilobytes): static
     {
         $this->maxFileSizeKilobytes = $kilobytes;
@@ -313,11 +411,15 @@ class ExcelImportAction extends Action
     public function getImportColumns(): array
     {
         if ($this->importer !== null) {
-            if ($this->validationRules !== [] || $this->upsertKeys !== [] || $this->onlyColumns !== null || $this->exceptColumns !== []) {
-                throw new LogicException('validateUsing(), upsertBy(), importColumns() and exceptColumns() configure the zero-config importer and have no effect together with ->importer(). Put the rules, resolveRecord() and columns in the importer class instead.');
+            if ($this->validationRules !== [] || $this->upsertKeys !== [] || $this->onlyColumns !== null || $this->exceptColumns !== [] || $this->additionalData !== []) {
+                throw new LogicException('validateUsing(), upsertBy(), importColumns(), exceptColumns() and additionalData() configure the zero-config importer and have no effect together with ->importer(). Put the rules, resolveRecord(), columns and fixed values in the importer class instead; form fields from optionsFormComponents() reach it as $this->options.');
             }
 
             return $this->importer::getColumns();
+        }
+
+        if (is_array($this->additionalData)) {
+            $this->assertNoTenantKey(array_keys($this->additionalData));
         }
 
         return FillableImporter::columnsFor(
@@ -325,8 +427,26 @@ class ExcelImportAction extends Action
             $this->validationRules,
             $this->upsertKeys,
             $this->onlyColumns,
-            [...$this->exceptColumns, ...$this->tenantOwnershipColumns()],
+            [...$this->exceptColumns, ...$this->tenantOwnershipColumns(), ...(is_array($this->additionalData) ? array_keys($this->additionalData) : [])],
         );
+    }
+
+    /**
+     * Fixed values are written after Filament assigns the tenant, so a
+     * tenant key among them would move records into another tenant.
+     *
+     * @param  list<string>  $keys
+     */
+    protected function assertNoTenantKey(array $keys): void
+    {
+        $tenantKeys = array_intersect($keys, $this->tenantOwnershipColumns());
+
+        if ($tenantKeys !== []) {
+            throw new LogicException(sprintf(
+                'additionalData() cannot set the tenant ownership key [%s]. Filament assigns the tenant itself; a fixed value would move records into another tenant.',
+                implode(', ', $tenantKeys),
+            ));
+        }
     }
 
     /**
@@ -451,7 +571,7 @@ class ExcelImportAction extends Action
 
         if (! array_key_exists($key, $this->readers)) {
             try {
-                $reader = ReaderFactory::make($this->localPath($state), $state->getClientOriginalName());
+                $reader = ReaderFactory::make($this->localPath($state), $state->getClientOriginalName(), $this->csvEncoding);
 
                 $this->readers[$key] = $reader->headers() === []
                     ? new UnsupportedSpreadsheet(__('filament-import::import.errors.no_headers'))
@@ -540,12 +660,18 @@ class ExcelImportAction extends Action
         }
 
         $model = $this->resolveModel();
+        $fixedValues = $this->importer === null ? (array) $this->evaluate($this->additionalData, ['data' => $data]) : [];
+        $this->assertNoTenantKey(array_keys($fixedValues));
 
         $runner = new ImportRunner(
             $reader,
-            $this->makeImporterFactory(),
-            $data['columnMap'] ?? [],
-            $this->evaluate($this->importerOptions),
+            $this->makeImporterFactory($fixedValues),
+            // A fixed value always wins, so no file column may feed it.
+            array_diff_key($data['columnMap'] ?? [], $fixedValues),
+            array_merge(
+                (array) $this->evaluate($this->importerOptions),
+                Arr::except($data, ['file', 'columnMap']),
+            ),
             $this->syncRowLimit,
             (new $model)->getConnectionName(),
         );
@@ -579,9 +705,10 @@ class ExcelImportAction extends Action
     }
 
     /**
+     * @param  array<string, mixed>  $fixedValues
      * @return class-string<Importer>|Closure(Import, array<string, string>, array<string, mixed>): Importer
      */
-    protected function makeImporterFactory(): string | Closure
+    protected function makeImporterFactory(array $fixedValues = []): string | Closure
     {
         if ($this->importer !== null) {
             return $this->importer;
@@ -591,7 +718,9 @@ class ExcelImportAction extends Action
         $columns = $this->getImportColumns();
         $upsertKeys = $this->upsertKeys;
 
-        return fn (Import $import, array $columnMap, array $options): Importer => (new FillableImporter($import, $columnMap, $options))->using($model, $columns, $upsertKeys);
+        $columns = array_values(array_filter($columns, fn (ImportColumn $column) => ! array_key_exists($column->getName(), $fixedValues)));
+
+        return fn (Import $import, array $columnMap, array $options): Importer => (new FillableImporter($import, $columnMap, $options))->using($model, $columns, $upsertKeys, $fixedValues);
     }
 
     /**

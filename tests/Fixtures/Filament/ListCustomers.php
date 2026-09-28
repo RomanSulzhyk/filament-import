@@ -4,7 +4,9 @@ namespace RomanSulzhyk\FilamentImport\Tests\Fixtures\Filament;
 
 use RomanSulzhyk\FilamentImport\Actions\ExcelImportAction;
 use RomanSulzhyk\FilamentImport\Tests\Fixtures\CustomerImporter;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ListRecords;
+use RomanSulzhyk\FilamentImport\Tests\Fixtures\CustomerOptionsImporter;
 
 class ListCustomers extends ListRecords
 {
@@ -25,6 +27,20 @@ class ListCustomers extends ListRecords
             // An existing core Filament importer, without queues.
             ExcelImportAction::make('importWithImporter')
                 ->importer(CustomerImporter::class),
+
+            // Fixed values: an array hides the column from mapping.
+            ExcelImportAction::make('importWithFixedCity')
+                ->additionalData(['city' => 'Kyiv']),
+
+            // A modal field feeding a fixed value through a closure.
+            ExcelImportAction::make('importWithDefaults')
+                ->optionsFormComponents([TextInput::make('default_city')->required()])
+                ->additionalData(fn (array $data) => ['city' => $data['default_city']]),
+
+            // An importer with its own options form, as in the Filament docs.
+            ExcelImportAction::make('importWithOptions')
+                ->importer(CustomerOptionsImporter::class)
+                ->importerOptions(['source' => 'code']),
         ];
     }
 }

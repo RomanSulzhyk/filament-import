@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'name' => ['Nimi', 'Koko nimi'],
+    'first_name' => ['Etunimi'],
+    'last_name' => ['Sukunimi'],
+    'email' => ['Sähköposti', 'Sähköpostiosoite'],
+    'phone' => ['Puhelin', 'Puhelinnumero'],
+    'mobile' => ['Matkapuhelin', 'Matkapuhelinnumero'],
+    'city' => ['Kaupunki', 'Postitoimipaikka'],
+    'country' => ['Maa'],
+    'address' => ['Osoite', 'Katuosoite'],
+    'street' => ['Katu'],
+    'postal_code' => ['Postinumero'],
+    'company' => ['Yritys', 'Yrityksen nimi'],
+    'price' => ['Hinta'],
+    'quantity' => ['Määrä', 'Lukumäärä'],
+    'description' => ['Kuvaus'],
+    'title' => ['Otsikko'],
+    'sku' => ['Tuotenumero', 'Tuotekoodi'],
+    'category' => ['Kategoria'],
+    'notes' => ['Muistiinpanot', 'Huomautukset'],
+    'comment' => ['Kommentti', 'Kommentit'],
+    'status' => ['Tila'],
+    'date_of_birth' => ['Syntymäaika'],
+];

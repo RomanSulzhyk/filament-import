@@ -6,6 +6,7 @@ return [
         'label' => 'Import',
         'modal_heading' => 'Import :label',
         'submit' => 'Import',
+        'download_template' => 'Download template',
     ],
 
     'steps' => [

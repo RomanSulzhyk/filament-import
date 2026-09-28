@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'name' => ['Nume complet', 'Nume și prenume'],
+    'first_name' => ['Prenume'],
+    'last_name' => ['Nume de familie'],
+    'email' => ['Adresă de e-mail'],
+    'phone' => ['Telefon', 'Număr de telefon'],
+    'mobile' => ['Mobil', 'Telefon mobil'],
+    'city' => ['Oraș', 'Localitate'],
+    'address' => ['Adresă'],
+    'street' => ['Stradă'],
+    'postal_code' => ['Cod poștal'],
+    'company' => ['Companie', 'Firmă'],
+    'price' => ['Preț'],
+    'quantity' => ['Cantitate'],
+    'description' => ['Descriere'],
+    'title' => ['Titlu'],
+    'sku' => ['Cod produs'],
+    'category' => ['Categorie'],
+    'notes' => ['Observații'],
+    'comment' => ['Comentariu'],
+    'status' => ['Stare'],
+    'date_of_birth' => ['Data nașterii'],
+];

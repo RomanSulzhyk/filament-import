@@ -9,7 +9,7 @@ class ReaderFactory
 {
     public const EXTENSIONS = ['csv', 'txt', 'xlsx'];
 
-    public static function make(string $path, ?string $originalName = null): SpreadsheetReader
+    public static function make(string $path, ?string $originalName = null, ?string $csvEncoding = null): SpreadsheetReader
     {
         $magic = static::magic($path);
 
@@ -28,7 +28,7 @@ class ReaderFactory
         }
 
         if (in_array($extension, ['csv', 'txt'], true) || ($magic !== '' && ! str_contains($magic, "\0"))) {
-            return new CsvReader($path);
+            return new CsvReader($path, encoding: $csvEncoding);
         }
 
         throw new UnsupportedSpreadsheet(__('filament-import::import.errors.unreadable'));

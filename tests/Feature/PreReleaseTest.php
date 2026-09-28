@@ -49,7 +49,7 @@ it('A11: tells Windows-1252 from Windows-1251', function (string $text, string $
     'German' => ['Größe Müller', 'Windows-1252'],
     'Spanish' => ['São Paulo Ñandú', 'Windows-1252'],
     'Ukrainian' => ['Тарас Шевченко з Києва', 'Windows-1251'],
-    'Russian' => ['Иван Петров из Москвы', 'Windows-1251'],
+    'Ukrainian city' => ['Олена Коваленко зі Львова', 'Windows-1251'],
     'Short Cyrillic' => ['Ян Ли', 'Windows-1251'],
 ]);
 
