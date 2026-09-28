@@ -150,7 +150,7 @@ ExcelImportAction::make()
     ->templateDownload(false) // hide the "Download template" link
     ->syncRowLimit(5000)
     ->csvEncoding('Windows-1250') // only if detection is not enough, see below
-    ->acceptedFileTypes([...ExcelImportAction::ACCEPTED_FILE_TYPES, 'text/tab-separated-values'])
+    ->acceptedFileTypes([...ExcelImportAction::ACCEPTED_FILE_TYPES, 'application/octet-stream'])
     ->maxFileSize(20480); // kilobytes
 ```
 

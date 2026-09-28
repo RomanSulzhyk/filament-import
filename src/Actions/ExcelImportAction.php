@@ -118,7 +118,7 @@ class ExcelImportAction extends Action
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'text/csv', 'text/x-csv', 'application/csv', 'application/x-csv',
         'text/comma-separated-values', 'text/x-comma-separated-values',
-        'text/plain', 'application/vnd.ms-excel',
+        'text/plain', 'application/vnd.ms-excel', 'text/tab-separated-values',
         'application/zip', 'application/x-zip-compressed',
         'application/x-ole-storage', 'application/CDFV2', 'application/vnd.ms-office',
     ];
@@ -162,7 +162,7 @@ class ExcelImportAction extends Action
                 FileUpload::make('file')
                     ->label(__('filament-import::import.fields.file.label'))
                     ->helperText(__('filament-import::import.fields.file.helper'))
-                    ->acceptedFileTypes(fn (): array => $this->getAcceptedFileTypes())
+                    ->acceptedFileTypes($this->getAcceptedFileTypes())
                     ->maxSize($this->maxFileSizeKilobytes)
                     ->storeFiles(false)
                     ->visibility('private')
@@ -411,7 +411,7 @@ class ExcelImportAction extends Action
     /**
      * Replace the MIME types the upload accepts, for systems that label CSV
      * files differently. Extend the defaults with
-     * [...ExcelImportAction::ACCEPTED_FILE_TYPES, 'text/tab-separated-values'].
+     * [...ExcelImportAction::ACCEPTED_FILE_TYPES, 'application/octet-stream'].
      * The reader still decides from the file's contents and extension, so an
      * accepted type never makes an unreadable file importable.
      *

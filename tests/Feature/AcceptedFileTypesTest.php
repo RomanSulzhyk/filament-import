@@ -1,5 +1,6 @@
 <?php
 
+use Composer\InstalledVersions;
 use Illuminate\Http\UploadedFile;
 use RomanSulzhyk\FilamentImport\Actions\ExcelImportAction;
 use RomanSulzhyk\FilamentImport\Tests\Fixtures\Customer;
@@ -11,6 +12,16 @@ use function Pest\Livewire\livewire;
 beforeEach(function () {
     $this->actingAs(User::create(['name' => 'Roman', 'email' => 'roman@example.com', 'password' => 'x']));
 });
+
+/**
+ * Livewire 4 validates a faked upload against the MIME type it was created
+ * with. Livewire 3 detects the type from the contents, where every CSV is
+ * text, so a label outside the list cannot be simulated there.
+ */
+function fakeUploadsKeepTheirLabel(): bool
+{
+    return version_compare(InstalledVersions::getVersion('livewire/livewire'), '4.0.0', '>=');
+}
 
 function csvLabelled(string $mimeType, string $name = 'customers.csv'): UploadedFile
 {
@@ -27,6 +38,10 @@ it('uses the default accepted file types unless they are replaced', function () 
 });
 
 it('refuses a CSV labelled with a type outside the defaults', function () {
+    if (! fakeUploadsKeepTheirLabel()) {
+        $this->markTestSkipped('Livewire 3 detects faked upload types from their contents.');
+    }
+
     livewire(ListCustomers::class)
         ->mountAction('excelImport')
         ->fillForm(['file' => csvLabelled('application/octet-stream')])
@@ -59,17 +74,14 @@ it('still refuses an unreadable file when its type is accepted', function () {
 });
 
 it('reads a tab-separated .tsv file', function () {
+    expect(ExcelImportAction::ACCEPTED_FILE_TYPES)->toContain('text/tab-separated-values');
+
     $file = UploadedFile::fake()->create('customers.tsv', 1, 'text/tab-separated-values');
     file_put_contents($file->getPathname(), "name\temail\nAda\tada@example.com\n");
 
     livewire(ListCustomers::class)
-        ->mountAction('importWithExtraTypes')
-        ->fillForm(['file' => $file])
-        ->assertHasFormErrors(['file']); // text/tab-separated-values is not in this action's list
-
-    livewire(ListCustomers::class)
         ->mountAction('excelImport')
-        ->fillForm(['file' => csvLabelled('text/plain', 'customers.tsv')])
+        ->fillForm(['file' => $file])
         ->callMountedAction()
         ->assertHasNoFormErrors();
 
